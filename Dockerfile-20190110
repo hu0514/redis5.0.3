@@ -1,0 +1,34 @@
+#base image
+FROM centos
+#install base packages
+RUN yum install  -y wget make gcc bzip2 \
+    && cd /mnt \
+    && wget https://github.com/jemalloc/jemalloc/releases/download/5.1.0/jemalloc-5.1.0.tar.bz2 -O -| tar jx \
+    && cd jemalloc-5.1.0 \
+    && ./configure \
+    && make && make install \
+    && cd .. \
+    && wget http://download.redis.io/releases/redis-5.0.3.tar.gz -O - | tar -zx \
+    && cd redis-5.0.3/deps \
+    && make hiredis jemalloc linenoise lua \ 
+    && cd .. \
+    && make \
+    && mkdir /usr/local/redis \
+    && cp src/redis-server /usr/local/redis/ \
+    && cp src/redis-cli /usr/local/redis/ \
+    && cp src/redis-check-aof /usr/local/redis/ \
+    && cp src/redis-check-rdb /usr/local/redis/ \ 
+    && cp src/redis-sentinel /usr/local/redis/ \
+    && cp src/redis-benchmark /usr/local/redis/ \
+    && cp redis.conf /usr/local/redis \
+    && ln -s /usr/local/redis/redis-server /usr/bin/redis-server \
+    && ln -s /usr/local/redis/redis-cli /usr/bin/redis-cli \
+    && ln -s /usr/local/redis/redis-check-aof /usr/bin/redis-check-aof \
+    && ln -s /usr/local/redis/redis-check-rdb /usr/bin/redis-check-rdb \
+    && ln -s /usr/local/redis/redis-sentinel /usr/bin/redis-sentinel \
+    && ln -s /usr/local/redis/redis-benchmark /usr/bin/redis-benchmark \
+    && yum clean all \
+    && cd .. && rm -rf /mnt/*
+CMD ["/usr/local/redis/redis-server"]
+EXPOSE 6379
+
