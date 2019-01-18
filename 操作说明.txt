@@ -1,8 +1,4 @@
-1，根据dockerfile新建镜像
+﻿1，根据dockerfile新建镜像
 docker build -t redis:5.0.3 .
-2,创建本地目录
-mkdir -p /data/redis/{data,conf}
-data目录：存放数据
-conf目录：存放配置文件
-3，创建容器(创建前请将配置文件放在conf目录)
-docker run -d --name redis --network host -v /data/redis/data:/usr/local/redis/data -v /data/redis/conf:/usr/local/redis/conf redis:5.0.3
+2，创建容器(创建前请将配置文件放在conf目录)
+docker run -d --name redis --network host -v /data:data redis:5.0.3

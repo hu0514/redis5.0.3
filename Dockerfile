@@ -32,7 +32,10 @@ RUN \cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && ln -s /usr/local/redis/redis-benchmark /usr/bin/redis-benchmark \
     && yum clean all \
     && cd .. && rm -rf /mnt/*
-COPY ./files/redis.conf /usr/local/redis/conf/
-ENTRYPOINT ["/usr/local/redis/redis-server","/usr/local/redis/conf/redis.conf"]
+COPY ./files/redis.conf /home/redis/
+ADD ./files/setup.sh /tmp/
+RUN chmod 755 /tmp/setup.sh
+ENTRYPOINT ["/tmp/setup.sh"]
+#ENTRYPOINT ["/usr/local/redis/redis-server","/usr/local/redis/conf/redis.conf"]
 #EXPOSE 6379
 
